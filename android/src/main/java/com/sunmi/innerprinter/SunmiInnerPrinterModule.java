@@ -953,7 +953,7 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
         try {
              Log.i(TAG, "Printer QR code");
             final IWoyouService ss = woyouService;
-            final Bitmap bitMap = CreatTwoDCode(data)
+            final Bitmap bitMap = CreatTwoDCode(data);
             ThreadPoolManager.getInstance().executeTask(new Runnable() {
                 @Override
                 public void run() {
@@ -996,7 +996,7 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
          try {
             Log.i(TAG, "Print Logo");
             final IWoyouService ss = woyouService;
-            final Bitmap bitMap = getReactApplicationContext().getAssets().open(path)
+            final Bitmap bitMap = getReactApplicationContext().getAssets().open(path);
             ThreadPoolManager.getInstance().executeTask(new Runnable() {
                 @Override
                 public void run() {
