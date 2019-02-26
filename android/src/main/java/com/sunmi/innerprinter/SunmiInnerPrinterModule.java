@@ -44,7 +44,7 @@ import com.google.zxing.MyMultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
-import com.google.zxing.OneDimensionalCodeWriter;
+import com.google.zxing.oned.OneDimensionalCodeWriter;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.Writer;
 import com.google.zxing.qrcode.encoder.ByteMatrix;
