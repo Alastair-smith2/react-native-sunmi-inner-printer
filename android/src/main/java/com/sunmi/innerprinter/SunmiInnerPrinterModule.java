@@ -25,6 +25,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Base64;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import java.nio.charset.StandardCharsets;
 
@@ -36,6 +37,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import android.content.IntentFilter;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MyMultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcodes.QRCodeWriter;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -940,7 +947,116 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
             }
         });
     }
+    
+    @ReactMethod
+    public void printTwoDCode(String data, final Promise p) {
+        try {
+             Log.i(TAG, "Printer QR code");
+            final IWoyouService ss = woyouService;
+            final Bitmap bitMap = CreatTwoDCode(data)
+            ThreadPoolManager.getInstance().executeTask(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ss.printBitmap(bitMap, new ICallback.Stub() {
+                            @Override
+                            public void onRunResult(boolean isSuccess) {
+                                if (isSuccess) {
+                                    p.resolve(null);
+                                } else {
+                                    p.reject("0", isSuccess + "");
+                                }
+                            }
 
+                            @Override
+                            public void onReturnString(String result) {
+                                p.resolve(result);
+                            }
+
+                            @Override
+                            public void onRaiseException(int code, String msg) {
+                                p.reject("" + code, msg);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "ERROR: " + e.getMessage());
+                        p.reject("" + 0, e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "ERROR: " + e.getMessage());
+        }
+    }
+    
+      @ReactMethod
+      public void printLogo(String path) {
+         try {
+            Log.i(TAG, "Print Logo");
+            final IWoyouService ss = woyouService;
+            final Bitmap bitMap = getReactApplicationContext().getAssets().open(path)
+            ThreadPoolManager.getInstance().executeTask(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ss.printBitmap(bitMap, new ICallback.Stub() {
+                            @Override
+                            public void onRunResult(boolean isSuccess) {
+                                if (isSuccess) {
+                                    p.resolve(null);
+                                } else {
+                                    p.reject("0", isSuccess + "");
+                                }
+                            }
+
+                            @Override
+                            public void onReturnString(String result) {
+                                p.resolve(result);
+                            }
+
+                            @Override
+                            public void onRaiseException(int code, String msg) {
+                                p.reject("" + code, msg);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "ERROR: " + e.getMessage());
+                        p.reject("" + 0, e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "ERROR: " + e.getMessage());
+        }
+      }
+    
+    
+    public static Bitmap CreatTwoDCode(String content) throws WriterException {
+        // Generate a one-dimensional bar code, specify the size of the code, do not generate a picture after the zoom, it will blur lead to recognition failure
+        QRCodeWriter writer = new QRCodeWriter();
+        BitMatrix matrix = writer.encode(content,
+                BarcodeFormat.QR_CODE, 240, 240);
+        int width = matrix.getWidth();
+        int height = matrix.getHeight();
+        int[] pixels = new int[width * height];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (matrix.get(x, y)) {
+                    pixels[y * width + x] = 0xff000000;
+                }
+            }
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
+        // Generate bitmap through the array of pixels, with reference to the api
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bitmap;
+    }
 
     @ReactMethod
     public void printString(String message, final Promise p) {
