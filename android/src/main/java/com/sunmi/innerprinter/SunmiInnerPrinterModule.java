@@ -26,7 +26,7 @@ import android.os.Message;
 import android.util.Base64;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphic.BitmapFactory;
+import android.graphics.BitmapFactory;
 
 import java.nio.charset.StandardCharsets;
 
@@ -46,8 +46,10 @@ import com.google.zxing.common.BitMatrix;
 
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.Writer;
-import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.encoder.ByteMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.google.zxing.qrcode.encoder.Encoder;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.util.Map;
 import java.util.HashMap;
